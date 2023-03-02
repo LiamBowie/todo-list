@@ -33,6 +33,9 @@ const ToDoSlice = createSlice({
     }
 })
 
+export const selectTodoList = state => state.todo.todoList;
+export const selectSortCriteria = state => state.todo.sortCriteria;
+
 export const {
     setTodoList,
     addTodo,
