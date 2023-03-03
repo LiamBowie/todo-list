@@ -13,6 +13,33 @@ const ToDoList = () => {
     const [showModal, setShowModal] = useState(false);
     const [currentTodo, setCurrentTodo] = useState(null);
     const [newTask, setNewTask] = useState("");
+    console.log(newTask);
+
+    useEffect(() => {
+        if(todoList.length > 0) {
+            localStorage.setItem("todoList", JSON.stringify(todoList));
+        }
+    }, [todoList]);
+
+    useEffect(() => {
+        const localTodoList = JSON.parse(localStorage.getItem("todoList"));
+        if(localTodoList) {
+            dispatch(setTodoList(localTodoList));
+        }
+    }, []);
+
+    const handleAddTodo = (task) => { 
+        if(task.trim().length === 0) { 
+            alert("Please enter a task");
+        } else { 
+            dispatch(addTodo({
+                task: task,
+                id: Date.now()
+            }))
+        }
+        setNewTask("");
+        setShowModal(true);
+    }
 
     return (
         <div>
@@ -23,6 +50,7 @@ const ToDoList = () => {
                             type="text" 
                             className="border w-full p-2 rounded-md outline-none mb-8"
                             value={newTask}
+                            onChange={(e) => {setNewTask(e.target.value)}}
                             placeholder={currentTodo ? "Update your task here" : "Enter your task here"} />
                         <div className="flex justify-between">
                             {currentTodo ? (
@@ -44,13 +72,16 @@ const ToDoList = () => {
                                 <>
                                     <button 
                                         className="bg-teal-700 rounded-md text-white py-3 px-6"
-                                        onClick={() => setShowModal(false)}
+                                        onClick={() => {setShowModal(false)}}
                                     >
                                         Cancel
                                     </button>
                                     <button 
                                         className="bg-orange-500 rounded-md text-white py-3 px-6"
-                                        onClick={() => setShowModal(false)}
+                                        onClick={() => {
+                                            setShowModal(false);
+                                            handleAddTodo(newTask);
+                                        }}
                                     >
                                         Add
                                     </button>
