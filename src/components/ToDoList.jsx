@@ -13,7 +13,6 @@ const ToDoList = () => {
     const [showModal, setShowModal] = useState(false);
     const [currentTodo, setCurrentTodo] = useState(null);
     const [newTask, setNewTask] = useState("");
-    console.log(newTask);
 
     useEffect(() => {
         if(todoList.length > 0) {
@@ -38,8 +37,17 @@ const ToDoList = () => {
             }))
         }
         setNewTask("");
-        setShowModal(true);
     }
+    
+    const handleSort = (sortCriteria) => { 
+        dispatch(sortTodo(sortCriteria));
+    }
+    const sortToDoList = todoList.filter((todo) => { 
+        if (sortCriteria === "All") return true;
+        if (sortCriteria === "Completed" && todo.completed) return true;
+        if (sortCriteria === "Not Completed" &&!todo.completed) return true;
+        return false;
+    });
 
     return (
         <div>
@@ -91,12 +99,37 @@ const ToDoList = () => {
                     </div>
                 </div>
             )}
-            <button 
-                className="bg-orange-500 text-center text-white py-3 px-10 rounded-md"
-                onClick={() => setShowModal(true)}
-            >
-                Add Task
-            </button>
+            <div className="flex items-center justify-center flex-col">
+                {todoList.length === 0 ? (
+                    <div className="my-8 text-center text-gray-500">
+                            You have nothing on your todo list! 
+                    </div>
+                ) : (
+                    <div className="container mx-auto mt-6">
+                        <div>
+                            {sortToDoList.map((todo) => (
+                                <div key={todo.id} className="flex items-center justify-between mb-6 bg-sky-100 mx-auto w-full md:w-[75%] rounded-md p-4">
+                                    <div>{todo.task}</div>
+                                    <div>
+                                        <button className="bg-amber-400 text-white p-1 rounded-md ml-2">
+                                            <TiPencil />
+                                        </button>
+                                        <button className="bg-red-400 text-white p-1 rounded-md ml-2">
+                                            <BsTrash />
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+                <button 
+                    className="bg-orange-500 text-center text-white py-3 px-10 rounded-md"
+                    onClick={() => setShowModal(true)}
+                >
+                    Add Task
+                </button>
+            </div>
         </div>
     )
 }
