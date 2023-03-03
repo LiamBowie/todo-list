@@ -35,13 +35,34 @@ const ToDoList = () => {
                 task: task,
                 id: Date.now()
             }))
+            setNewTask("");
+            setShowModal(true);
         }
-        setNewTask("");
+    }
+
+    const handleUpdateTodo = (id, task) => { 
+        if(task.trim().length === 0) { 
+            alert("Please enter a task");
+        } else { 
+            dispatch(updateTodo({
+                task: task,
+                id: id
+            }))
+            setNewTask("");
+            setCurrentTodo(null);
+        }
+    }
+
+    const handleDeleteTodo = (id) => { 
+        const updatedTodoList = todoList.filter(todo => todo.id !== id);
+        dispatch(setTodoList(updatedTodoList));
+        localStorage.setItem("todoList", JSON.stringify(updatedTodoList));
     }
     
     const handleSort = (sortCriteria) => { 
         dispatch(sortTodo(sortCriteria));
     }
+
     const sortToDoList = todoList.filter((todo) => { 
         if (sortCriteria === "All") return true;
         if (sortCriteria === "Completed" && todo.completed) return true;
@@ -65,13 +86,16 @@ const ToDoList = () => {
                                 <>
                                     <button 
                                         className="bg-orange-500 rounded-md text-white py-3 px-6"
-                                        onClick={() => setShowModal(false)}
+                                        onClick={() => {
+                                            setShowModal(false);
+                                            handleUpdateTodo(currentTodo.id, newTask);
+                                        }}
                                     >
                                         Save
                                     </button>
                                     <button 
                                         className="bg-teal-700 rounded-md text-white py-3 px-6"
-                                        onClick={() => setShowModal(false)}
+                                        onClick={() => {setShowModal(false); setCurrentTodo(null); setNewTask("")}}
                                     >
                                         Cancel
                                     </button>
@@ -111,10 +135,16 @@ const ToDoList = () => {
                                 <div key={todo.id} className="flex items-center justify-between mb-6 bg-sky-100 mx-auto w-full md:w-[75%] rounded-md p-4">
                                     <div>{todo.task}</div>
                                     <div>
-                                        <button className="bg-amber-400 text-white p-1 rounded-md ml-2">
+                                        <button className="bg-amber-400 text-white p-1 rounded-md ml-2"
+                                        onClick={() => {
+                                            setShowModal(true);
+                                            setCurrentTodo(todo);
+                                            setNewTask(todo.task);
+                                        }}>
                                             <TiPencil />
                                         </button>
-                                        <button className="bg-red-400 text-white p-1 rounded-md ml-2">
+                                        <button className="bg-red-400 text-white p-1 rounded-md ml-2"
+                                        onClick={() => handleDeleteTodo(todo.id)}>
                                             <BsTrash />
                                         </button>
                                     </div>
