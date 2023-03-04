@@ -78,9 +78,10 @@ const ToDoList = () => {
         <div>
             {showModal && (
                 <div className="fixed w-full left-0 top-0 h-full bg-transparentBlack flex items-center justify-center">
-                    <div className="bg-white p-8 rounded-md">
+                    <div className="bg-white p-8 rounded-md w">
                         <input 
                             type="text" 
+                            maxLength={140}
                             className="border w-full p-2 rounded-md outline-none mb-8"
                             value={newTask}
                             onChange={(e) => {setNewTask(e.target.value)}}
