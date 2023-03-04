@@ -63,6 +63,10 @@ const ToDoList = () => {
         dispatch(sortTodo(sortCriteria));
     }
 
+    const handleToggleComplete = (id) => { 
+        dispatch(toggleCompleted({ id }))
+    }
+
     const sortToDoList = todoList.filter((todo) => { 
         if (sortCriteria === "All") return true;
         if (sortCriteria === "Completed" && todo.completed) return true;
@@ -125,15 +129,28 @@ const ToDoList = () => {
             )}
             <div className="flex items-center justify-center flex-col">
                 {todoList.length === 0 ? (
-                    <div className="my-8 text-center text-gray-500">
+                    <div className="my-8 text-center text-gray-400">
                             You have nothing on your todo list! 
                     </div>
                 ) : (
                     <div className="container mx-auto mt-6">
+                        <div className="flex justify-center mb-6">
+                            <select className="p-1 outline-none bg-slate-50 rounded-md text-sm" 
+                                onChange={(e) => handleSort(e.target.value)}>
+                                <option value="All">All</option>
+                                <option value="Completed">Complete</option>
+                                <option value="Not Completed">Not Complete</option>
+                            </select>
+                        </div>
                         <div>
                             {sortToDoList.map((todo) => (
                                 <div key={todo.id} className="flex items-center justify-between mb-6 bg-sky-100 mx-auto w-full md:w-[75%] rounded-md p-4">
-                                    <div>{todo.task}</div>
+                                    <div
+                                        className={todo.completed ? "line-through text-green-500 hover:cursor-pointer" : "text-red-700 hover:cursor-pointer"}
+                                        onClick={() => handleToggleComplete(todo.id)}
+                                    >
+                                        {todo.task}
+                                    </div>
                                     <div>
                                         <button className="bg-amber-400 text-white p-1 rounded-md ml-2"
                                         onClick={() => {
