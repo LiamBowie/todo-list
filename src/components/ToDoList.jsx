@@ -13,10 +13,20 @@ const ToDoList = () => {
     const [showModal, setShowModal] = useState(false);
     const [currentTodo, setCurrentTodo] = useState(null);
     const [newTask, setNewTask] = useState("");
+    const [inspirationalQuote, setInspirationalQuote] = useState("");
+    const [inspirationalAuthor, setInspirationalAuthor] = useState("");
 
     useEffect(() => {
         if(todoList.length > 0) {
             localStorage.setItem("todoList", JSON.stringify(todoList));
+        } else {
+            const fetchData = async () => {
+                const response = await fetch('https://api.goprogram.ai/inspiration');
+                const json = await response.json();
+                setInspirationalQuote(json.quote);
+                setInspirationalAuthor(json.author);
+            }
+            fetchData();
         }
     }, [todoList]);
 
@@ -131,7 +141,8 @@ const ToDoList = () => {
             <div className="flex items-center justify-center flex-col">
                 {todoList.length === 0 ? (
                     <div className="my-8 text-center text-gray-400">
-                            You have nothing on your todo list! 
+                            <p className="italic">{inspirationalQuote}</p>
+                            <p className="text-right pr-8">- {inspirationalAuthor}</p>
                     </div>
                 ) : (
                     <div className="container mx-auto mt-6">
